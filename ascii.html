@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="vieport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body style="margin: 0; font-family: 'conslas'; line-height: 95%;
+  letter-spacing: 2px; font-size: 10px;">
+
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+<h4 style="
+  font-family: monospace;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: pre;
+"></h4>
+
+<script>
+    const img = new Image()
+    img.src = "zoo.png"
+    const canvas = document.getElementById("canvas")
+    const ctx = canvas.getContext("2d")
+    img.addEventListener("load", () => {
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+      const step = 1
+      const w = canvas.width
+      const h = canvas.height
+      const ascii = '@$#Y!=+~- '
+      const out = []
+
+      for (let j = 0; j < h; j += step){
+        let row = ''
+        for (let i = 0; i < w; i += step){
+          const pixel = ctx.getImageData(i, j, 1, 1).data;
+          const gray = 0.299 * pixel[0] + 0.587 * pixel[1] + 0.114 * pixel[2];
+          const index = Math.floor(gray / (256 / ascii.length))
+          const ch = ascii[Math.max(0, Math.min(ascii.length - 1, index))]
+          row += ch
+        }
+        out.push(row)
+      }
+
+      const pre = document.querySelector('h4')
+      pre.innerText = out.join('\n')
+    });
+</script> 
+  </body>
+</html>
